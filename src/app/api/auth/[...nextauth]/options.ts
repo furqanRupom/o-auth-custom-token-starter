@@ -1,5 +1,6 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import { cookies } from 'next/headers';
 
 export const authOptions: NextAuthOptions = ({
     providers: [
@@ -22,37 +23,38 @@ export const authOptions: NextAuthOptions = ({
             }
             return session;
         },
-        async signIn({ user ,credentials,account}) {
-            console.log(user,account)
+        async signIn({ user, credentials, account }) {
+            console.log(user, account)
             try {
-        
+
 
                 const response = await fetch('https://diasporex-api.vercel.app/api/v1/auth/social-login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         email: user.email,
-                        imageUrl:user.image,
+                        imageUrl: user.image,
                         name: user.name,
                     }),
                 });
-                
-                const {data} = await response.json();
+
+                const { data } = await response.json();
                 if (response.ok && data.accessToken && data.refreshToken) {
                     user.id = data.user.id
                     user.accessToken = data.accessToken;
                     user.refreshToken = data.refreshToken;
-                
-                    return true; 
+                    cookies().set('accessToken', data.accessToken);
+                    cookies().set('refreshToken', data.refreshToken)
+                    return true;
                 } else {
-                    return false; 
+                    return false;
                 }
             } catch (error) {
-                return false; 
+                return false;
             }
         },
-        async jwt({ token, user,account }) {
-       
+        async jwt({ token, user, account }) {
+
             if (user) {
                 token.id = user.id;
                 token.name = user.name;
@@ -60,7 +62,7 @@ export const authOptions: NextAuthOptions = ({
                 token.accessToken = user.accessToken;
                 token.refreshToken = user.refreshToken;
             }
-          
+
             return token;
         },
     },
@@ -68,8 +70,8 @@ export const authOptions: NextAuthOptions = ({
         strategy: 'jwt',
     },
     pages: {
-        signIn: '/', 
-        signOut:'/sign-in'// Custom sign-in page
+        signIn: '/',
+        signOut: '/sign-in'// Custom sign-in page
     },
     secret: process.env.NEXTAUTH_SECRET as string,
 });
