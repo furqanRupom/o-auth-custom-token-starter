@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = ({
                     user.accessToken = data.accessToken;
                     user.refreshToken = data.refreshToken;
                     cookies().set('accessToken', data.accessToken);
-                    cookies().set('refreshToken', data.refreshToken)
+                    cookies().set('refreshToken', data.refreshToken);
                     return true;
                 } else {
                     return false;
