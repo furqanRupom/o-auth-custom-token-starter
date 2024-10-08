@@ -4,11 +4,15 @@ import { getSession, signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { authOptions } from "./api/auth/[...nextauth]/options";
 import axiosInstance from "./lib/nextAuthInsetptures";
+import useUser from "@/hooks/useUser";
+import ExchangeCard from "@/components/ExchangeRate";
 
 export default async function Home() {
-  const result = await axiosInstance.get("/user/profile");
-  const profileData = await result.data;
-  console.log(profileData);
+  // const result = await axiosInstance.get("/user/profile");
+  // console.log(result)
+  // const profileData = await result?.data;
+  // console.log(profileData);
+ 
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-purple-50 via-pink-50 to-red-50">
@@ -16,22 +20,22 @@ export default async function Home() {
         <div className="flex justify-center mb-4 relative">
           <img
             className="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover"
-            src={profileData?.data.imageUrl || "/default-avatar.png"}
+            // src={profileData?.data.imageUrl || "/default-avatar.png"}
             alt="Profile Image"
           />
         </div>
 
         <h4 className="text-center text-2xl font-extrabold uppercase mb-2 text-gray-900">
-          {profileData?.data.name}
+          {/* {profileData?.data.name} */}
         </h4>
         <h5 className="text-center text-lg text-gray-600 mb-1">
-          {profileData?.data.email}
+          {/* {profileData?.data.email} */}
         </h5>
         <h5 className="text-center text-lg text-gray-500 mb-1 italic">
-          Status: {profileData?.data.status || "N/A"}
+          {/* Status: {profileData?.data.status || "N/A"} */}
         </h5>
         <h5 className="text-center text-lg text-gray-600 mb-4">
-          Username: {profileData?.data.username || "Unknown"}
+          {/* Username: {profileData?.data.username || "Unknown"} */}
         </h5>
 
         {/* Buttons */}
@@ -47,6 +51,8 @@ export default async function Home() {
         {/* Background Decoration */}
         <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-pink-50 w-40 h-40 rounded-full opacity-30 blur-3xl"></div>
       </div>
+
+      <ExchangeCard />
     </div>
   );
 }
